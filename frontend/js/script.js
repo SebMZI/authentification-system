@@ -5,21 +5,42 @@ const emailInput = document.getElementById("email");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 
-submitBtn.addEventListener("click", (e) => {
+submitBtn.addEventListener("click", async (e) => {
   e.preventDefault();
+  if (submitBtn.dataset.page === "signin") {
+    await signin(usernameInput.value, passwordInput.value);
+  } else if (submitBtn.dataset.page === "signup") {
+    console.log(
+      firstNameInput.value,
+      lastNameInput.value,
+      emailInput.value,
+      usernameInput.value,
+      passwordInput.value
+    );
+    signup(
+      firstNameInput.value,
+      lastNameInput.value,
+      emailInput.value,
+      usernameInput.value,
+      passwordInput.value
+    );
+  }
 });
 
 async function signup(firstName, lastName, email, username, password) {
   try {
-    const response = await fetch("http://localhost:5500/aut/signup", {
+    const response = await fetch("http://localhost:5500/auth/signup", {
       method: "POST",
-      body: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         firstName,
         lastName,
         email,
         username,
         password,
-      },
+      }),
     });
 
     if (!response.success) {
@@ -35,12 +56,15 @@ async function signup(firstName, lastName, email, username, password) {
 
 async function signin(username, password) {
   try {
-    const response = await fetch("http://localhost:5500/aut/signin", {
+    const response = await fetch("http://localhost:5500/auth/signin", {
       method: "POST",
-      body: {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         username,
         password,
-      },
+      }),
     });
 
     if (!response.success) {

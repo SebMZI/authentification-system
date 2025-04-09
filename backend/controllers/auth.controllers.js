@@ -10,6 +10,8 @@ export const signup = async (req, res, next) => {
   try {
     const { firstName, lastName, email, username, password } = req.body;
 
+    console.log(firstName, lastName, email, username, password, req.body);
+
     const emailAlreadyUsed = await User.findOne({ email });
     const uernameAlreadyUsed = await User.findOne({ username });
 
