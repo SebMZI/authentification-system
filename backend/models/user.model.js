@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     minLength: 3,
     maxLength: 50,
   },
-  emai: {
+  email: {
     type: String,
     required: [true, "User Email is required"],
     unique: true,
@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: [true, "User Username is required"],
+    unique: true,
     minLength: 3,
     maxLength: 50,
   },
