@@ -62,4 +62,46 @@ export const signup = async (req, res, next) => {
   }
 };
 
-export const signin = async (req, res, next) => {};
+export const signin = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      const error = new Error("User not exists");
+      error.status = 404;
+      throw error;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (username !== user.username || !isPasswordValid) {
+      const error = new Error("Unauthorized");
+      error.status = 401;
+      throw error;
+    }
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN,
+    });
+
+    res.cookie("token", token, {
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      samesite: "strict",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+      data: {
+        token,
+        user,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
