@@ -9,15 +9,22 @@ const notification = document.querySelector(".notification");
 submitBtn.addEventListener("click", async (e) => {
   e.preventDefault();
   if (submitBtn.dataset.page === "signin") {
+    if (!verify(usernameInput.value) || !verify(passwordInput.value)) {
+      notify("Please fill all the fields", "rgba(128, 0, 0, 0.2)", "red");
+      return;
+    }
     await signin(usernameInput.value, passwordInput.value);
   } else if (submitBtn.dataset.page === "signup") {
-    console.log(
-      firstNameInput.value,
-      lastNameInput.value,
-      emailInput.value,
-      usernameInput.value,
-      passwordInput.value
-    );
+    if (
+      !verify(firstNameInput.value) ||
+      !verify(lastNameInput.value) ||
+      !verify(emailInput.value) ||
+      !verify(usernameInput.value) ||
+      !verify(passwordInput.value)
+    ) {
+      notify("Please fill all the fields", "rgba(128, 0, 0, 0.2)", "red");
+      return;
+    }
     signup(
       firstNameInput.value,
       lastNameInput.value,
@@ -108,4 +115,11 @@ function notify(text, bgColor, borderColor) {
   setTimeout(() => {
     notification.style.top = "-100%";
   }, 3000);
+}
+
+function verify(value) {
+  if (!value || value.length < 1) {
+    return false;
+  }
+  return true;
 }
