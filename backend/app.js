@@ -6,13 +6,15 @@ import { connectToDatabase } from "./config/database.js";
 import { PORT } from "./config/env.js";
 
 const app = express();
-app.use(express.json());
-app.use(cookieparser());
 app.use(
   cors({
-    origin: "*",
+    origin: "http://127.0.0.1:5500",
+    credentials: true,
   })
 );
+app.use(express.json());
+app.use(cookieparser());
+app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", authRouter);
 

@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
 import { JWT_EXPIRES_IN, JWT_SECRET } from "../config/env.js";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const signup = async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -77,7 +79,6 @@ export const signin = async (req, res, next) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (username !== user.username || !isPasswordValid) {
       const error = new Error("Unauthorized");
       error.status = 401;
@@ -91,8 +92,7 @@ export const signin = async (req, res, next) => {
     res.cookie("token", token, {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      samesite: "strict",
+      secure: isProduction,
     });
 
     res.status(200).json({
